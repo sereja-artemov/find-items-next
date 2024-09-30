@@ -95,7 +95,6 @@ export default function Game({ isStartScreen }) {
   const [isHalfItemsPopup, setIsHalfItemsPopup] = useState(false);
   const [isZeroItemsPopup, setIsZeroItemsPopup] = useState(false);
 
-  const [isImagePreloading, setIsImagePreloading] = useState(true);
 
   const [gameItems, setGameItems] = useState(gameItemsData);
   const [panelItems, setPanelItems] = useState(gameItems);
