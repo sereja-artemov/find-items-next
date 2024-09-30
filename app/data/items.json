@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Зеркало",
+    "text": "Посмотреться перед выходом на сцену",
+    "img": {
+      "link": "img/game/mirror.svg",
+      "foundedLink": "img/game/finded/mirror.png",
+      "width": "90",
+      "height": "142"
+    },
+    "coords": {
+      "top": "712",
+      "left": "1051"
+    }
+  },
+  {
+    "title": "Барабанные палочки",
+    "text": "Побарабанить",
+    "img": {
+      "link": "img/game/drumsticks.svg",
+      "foundedLink": "img/game/finded/drumsticks.png",
+      "width": "175",
+      "height": "110"
+    },
+    "coords": {
+      "top": "975",
+      "left": "327"
+    }
+  }
+]
