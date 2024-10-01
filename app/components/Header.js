@@ -9,7 +9,7 @@ export default function Header({playSound, pauseSound, isSoundPlay}) {
   }
 
   return (
-    <header className="container relative z-10 flex justify-between px-6 py-6">
+    <header className="container relative z-10 flex justify-between px-6 py-6 mx-auto">
       <Image
         width="68"
         height="64"
@@ -24,7 +24,7 @@ export default function Header({playSound, pauseSound, isSoundPlay}) {
           </div>
         </button>
         <button type="button" className="rounded-full border-4 border-[#2b8c97] p-1 shadow-[inset_0_0_0_2px_#dfbbd4]">
-          <div className="relative h-14 w-14 bg-[url('/img/sound.png')] bg-contain bg-center bg-no-repeat"></div>
+          <div className="header__rules relative h-14 w-14 bg-[url('/img/sound.png')] bg-contain bg-center bg-no-repeat"></div>
         </button>
       </div>
     </header>

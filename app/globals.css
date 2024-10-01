@@ -82,5 +82,15 @@ body {
   background: url(/img/game/lights.png) no-repeat 50% / contain;
   animation: d 1.5s ease-out;
 }
-
+.header__rules::before {
+  border: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  content: "";
+  width: 33px;
+  height: 33px;
+  background: url(/img/question-icon.svg) no-repeat center / contain;
+}
 }

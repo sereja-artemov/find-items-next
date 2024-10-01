@@ -344,7 +344,7 @@ export default function Game({ isStartScreen }) {
   }
 
   return (
-    <div className={`${!isStartScreen ? "opacity-100" : "opacity-0"}`}>
+    <div className={`${!isStartScreen ? "opacity-100" : "opacity-0"} m-auto`}>
       {isRules && (
         <Rules setIsRules={setIsRules} setIsGameStarted={setIsGameStarted} />
       )}
@@ -379,6 +379,7 @@ export default function Game({ isStartScreen }) {
           <button onClick={() => restartTimerWithNewExpiryTimestamp()}>Рестарт</button>
         </div>
       </div>
+
       <section
         ref={game}
         className="absolute top-0 left-0 w-full h-full overflow-hidden game"
@@ -417,6 +418,8 @@ export default function Game({ isStartScreen }) {
               })}
           </div>
         </div>
+
+        
 
         <PopupWrapper
           id="panel-items-popup"
