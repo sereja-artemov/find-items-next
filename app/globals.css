@@ -8,10 +8,10 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :root {
     --background: #ededed;
     --foreground: #222222;
-  }
+  } */
 }
 
 body {
@@ -92,5 +92,9 @@ body {
   width: 33px;
   height: 33px;
   background: url(/img/question-icon.svg) no-repeat center / contain;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
 }
 }

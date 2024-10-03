@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import logo from "/public/img/logo.png";
 
-export default function Header({playSound, pauseSound, isSoundPlay}) {
+export default function Header({playSound, pauseSound, isSoundPlay, setIsRules}) {
 
   function soundClickHandler() {
     isSoundPlay ? pauseSound() : playSound();
@@ -23,7 +23,7 @@ export default function Header({playSound, pauseSound, isSoundPlay}) {
             <span className="visually-hidden">Включить/выключить звук</span>
           </div>
         </button>
-        <button type="button" className="rounded-full border-4 border-[#2b8c97] p-1 shadow-[inset_0_0_0_2px_#dfbbd4]">
+        <button onClick={() => setIsRules(true)} type="button" className="rounded-full border-4 border-[#2b8c97] p-1 shadow-[inset_0_0_0_2px_#dfbbd4]">
           <div className="header__rules relative h-14 w-14 bg-[url('/img/sound.png')] bg-contain bg-center bg-no-repeat"></div>
         </button>
       </div>

@@ -94,6 +94,7 @@ export default function Game({ isStartScreen }) {
   const [isAllItemsPopup, setIsAllItemsPopup] = useState(false);
   const [isHalfItemsPopup, setIsHalfItemsPopup] = useState(false);
   const [isZeroItemsPopup, setIsZeroItemsPopup] = useState(false);
+  const [isSendGiftPopup, setIsSendGiftPopup] = useState(false);
 
 
   const [gameItems, setGameItems] = useState(gameItemsData);
@@ -273,9 +274,10 @@ export default function Game({ isStartScreen }) {
 
   function restartGame() {
     onClosePopups();
+    restartTimerWithNewExpiryTimestamp();
     setIsGameStarted(true);
     setIsTimerEnd(false);
-    restartTimerWithNewExpiryTimestamp();
+    setIsSendGiftPopup(false);
 
     setFoundedItems([]);
     setFoundedItem(null);
@@ -329,6 +331,7 @@ export default function Game({ isStartScreen }) {
     setIsHalfItemsPopup(false);
     setIsZeroItemsPopup(false);
     setIsPanelPopup(false);
+    setIsRules(false);
   }
 
   function initGameContainerStartPosition() {
@@ -346,7 +349,7 @@ export default function Game({ isStartScreen }) {
   return (
     <div className={`${!isStartScreen ? "opacity-100" : "opacity-0"} m-auto`}>
       {isRules && (
-        <Rules setIsRules={setIsRules} setIsGameStarted={setIsGameStarted} />
+        <Rules setIsRules={setIsRules} setIsGameStarted={setIsGameStarted} isGameStarted={isGameStarted} />
       )}
 
       <ItemPopup
@@ -358,6 +361,7 @@ export default function Game({ isStartScreen }) {
         pauseSound={pauseSound}
         playSound={playSound}
         isSoundPlay={isSoundPlay}
+        setIsRules={setIsRules}
       />
 
       <div
@@ -386,6 +390,7 @@ export default function Game({ isStartScreen }) {
       >
         {panelItems.length >= 0 && (
           <GamePanel
+            foundedItems={foundedItems}
             panelItems={panelItems}
             foundedItem={foundedItem}
             setIsPanelPopup={setIsPanelPopup}
@@ -430,6 +435,22 @@ export default function Game({ isStartScreen }) {
           <GamePanelPopup setIsOpen={setIsPanelPopup} items={gameItems} />
         </PopupWrapper>
 
+        <PopupWrapper id="send-gift-popup" isOpen={isSendGiftPopup}>
+          <div className="z-1010 mx-auto max-w-[456px] rounded-[24px] flex items-center flex-col">
+            <p className="mb-6 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">Отправили подарок на почту!</p>
+            <p className="mb-6">Может, сыграем ещё или расскажем о вашем успехе?</p>
+            <div className="mx-auto inline-flex w-full max-w-[456px] rounded-full border-4 border-[#2b8c97] p-1 text-white shadow-[inset_0_0_0_2px_#dfbbd4] transition-colors duration-150 ease-in-out">
+              <button
+                onClick={restartGame}
+                type="submit"
+                className={`text-20 text-none leading-7.5 h-15 font-montserrat text-shadow-lg m-0 inline-flex w-full max-w-[440px] flex-row items-center justify-center overflow-hidden whitespace-nowrap rounded-full border-0 bg-[url('/img/game/btn-bg.png')] bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-cover bg-center bg-no-repeat px-6 py-2.5 text-center align-top font-bold text-white transition-colors duration-150 ease-in-out`}
+              >
+                Играть заново
+              </button>
+            </div>
+          </div>
+        </PopupWrapper>
+
         <PopupWrapper id="error-popup" isOpen={isErrorPopup}>
           <div className="z-1010 mx-auto max-w-[456px] rounded-[24px] flex items-center flex-col">
             <Image src="/img/error-icon.svg" alt="" width="64" height="64"></Image>
@@ -443,15 +464,15 @@ export default function Game({ isStartScreen }) {
             Поздравляю! <br /> Вы нашли все предметы!
           </p>
           {/* <Image src="" alt="" /> */}
-          <ContactForm />
+          <ContactForm setIsSendGiftPopup={setIsSendGiftPopup} onClosePopups={onClosePopups} />
         </PopupWrapper>
 
         <PopupWrapper id="half-items" isOpen={isHalfItemsPopup}>
           <p className="mb-6 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">
-            Поздравляю! <br /> Вы нашли половину предметов!
+            Вы нашли {foundedItems.length} из {gameItems.length} предметов!
           </p>
           {/* <Image src="" alt="" /> */}
-          <ContactForm />
+          <ContactForm setIsSendGiftPopup={setIsSendGiftPopup} onClosePopups={onClosePopups} />
         </PopupWrapper>
 
         <PopupWrapper id="zero-items" isOpen={isZeroItemsPopup}>

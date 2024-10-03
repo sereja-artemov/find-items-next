@@ -5,7 +5,7 @@ import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import Image from "next/image";
 
-export default function GamePanel({ panelItems, foundedItem, setIsPanelPopup }) {
+export default function GamePanel({ panelItems, foundedItems, foundedItem, setIsPanelPopup }) {
   const sliderOptions = {
     loop: false,
     mode: "free-snap",
@@ -49,9 +49,9 @@ export default function GamePanel({ panelItems, foundedItem, setIsPanelPopup }) 
             {panelItems.map((item, index) => {
               if (!item.isFounded) {
                 return (
-                  <div key={index} className="relative !w-auto shrink-0 keen-slider__slide">
+                  <div key={index} className="relative !w-auto shrink-0 keen-slider__slide filter contrast-0 brightness-50">
                     <div
-                      className="w-16 h-16 filter contrast-0 brightness-60"
+                      className="w-16 h-16 "
                       style={{
                         background: `url(${item.img.foundedLink}) no-repeat center / contain`,
                       }}
@@ -66,6 +66,10 @@ export default function GamePanel({ panelItems, foundedItem, setIsPanelPopup }) 
             <div className="keen-slider__slide">2</div>
             <div className="keen-slider__slide">3</div> */}
           </div>
+        </div>
+        <div className="absolute top-[-48px] left-1/2 backdrop-blur-sm -translate-x-1/2 py-1 px-4 rounded-[16px] w-max min-h-[48px] text-[20px] font-extrabold text-inherit right-auto flex gap-[24px] items-center bg-[rgba(0,0,0,0.7)] border-4 border-[#2b8c97] shadow-[inset_0_0_0_2px_#dfbbd4]">
+              <p className="text-xl font-black leading-normal text-center text-transparent font-montserrat bg-clip-text bg-gradient-to-r from-pink-300 to-pink-600">Что ищем </p>
+              <div><span>{foundedItems.length}</span><span className="text-[#4c4c4c]">/</span><span className="text-[#4c4c4c]">{panelItems.length}</span></div>
         </div>
       </div>
     </div>

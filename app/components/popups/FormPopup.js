@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import sendForm from "../../lib/sendForm";
 
-export default function ContactForm() {
+export default function ContactForm({setIsSendGiftPopup, onClosePopups}) {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const {
@@ -33,7 +33,9 @@ export default function ContactForm() {
     try {
       setIsLoading(false);
       if (res.ok) {
-        setSuccessMessage("Спасибо! Форма отправлена успешно.");
+        onClosePopups();
+        setIsSendGiftPopup(true)
+        // setSuccessMessage("Спасибо! Форма отправлена успешно.");
       } else {
         returnPromiseError().catch((error) => {
           setIsLoading(false);

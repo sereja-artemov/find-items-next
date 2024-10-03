@@ -9,14 +9,14 @@ export default function FirstScreen({ setIsStartScreen, setMainImageLoading }) {
   return (
     <section className="absolute z-30 flex flex-col items-center justify-start w-full h-full m-auto overflow-hidden -translate-x-1/2 -translate-y-1/2 scrollbar-hidden left-1/2 top-1/2 bg-black/40 backdrop-blur-md">
       <div className="scrollbar-hide relative h-full overflow-y-auto bg-[#191226]">
-        <div className='relative z-10 flex min-h-full w-screen max-w-[1920px] items-center justify-start bg-[url("/img/game/start-bg.jpg")] bg-cover bg-center bg-no-repeat'>
+        <div className='relative items-start z-10 flex min-h-full w-screen max-w-[1920px] justify-start bg-[url("/img/game/start-bg.jpg")] bg-cover bg-center bg-no-repeat'>
           <div className="w-screen p-4 text-center">
             <Image
               width="68"
               height="64"
               src="/img/logo.png"
               alt="логотип"
-              className="my-10 logo"
+              className="mx-auto my-10 logo"
             />
             <div className="relative flex items-center justify-center">
               <Image
