@@ -38,7 +38,7 @@ export default function Rules({ isRules, setIsRules, setIsGameStarted, isGameSta
 
   useEffect(() => {
     let progress = instanceRef.current.track.details.progress;
-    console.log(instanceRef.current.track.details);
+
     isGameStarted && setButtonText("Понятно");
     if (progress >= 0 && progress < 1) {
       setButtonText("Далее");

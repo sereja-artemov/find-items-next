@@ -1,5 +1,5 @@
 "use client";
-
+import dynamic from 'next/dynamic'
 import React, { useEffect, useRef, useState } from "react";
 import GameItem from "./GameItem";
 import ItemPopup from "./ItemPopup";
@@ -15,7 +15,8 @@ import Header from "./Header";
 import Image from "next/image";
 import { popUpFromBottom } from "../content/FramerMotionVariants";
 import Button from "./Button";
-import Timer from "./Timer";
+// import Timer from "./Timer";
+const Timer = dynamic(() => import('./Timer'), { ssr: false });
 
 const gameplaySoundUrl = "/sound/gameplay.mp3";
 const rightSoundUrl = "/sound/right.mp3";
@@ -250,6 +251,8 @@ export default function Game({ isStartScreen }) {
       walkY = (y - startCoords.y) * 1;
     gameContainer.current.scrollLeft = containerScrollPos.left - walkX;
     gameContainer.current.scrollTop = containerScrollPos.top - walkY;
+
+    setIsItemPopupShow(false);
   }
 
   function pauseSound() {
