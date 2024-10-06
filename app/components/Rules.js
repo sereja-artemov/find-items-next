@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 // import 'keen-slider/keen-slider.min.css'
 import { useKeenSlider } from "keen-slider/react";
-import { set } from "react-hook-form";
-export default function Rules({ setIsRules, setIsGameStarted, isGameStarted }) {
+import { motion } from "framer-motion";
+import { headingFromLeft } from "../content/FramerMotionVariants";
+import Button from "./Button";
+
+export default function Rules({ isRules, setIsRules, setIsGameStarted, isGameStarted }) {
   const [buttonText, setButtonText] = useState("Старт");
   const [sliderRef, instanceRef] = useKeenSlider(
     {
@@ -60,9 +63,13 @@ export default function Rules({ setIsRules, setIsGameStarted, isGameStarted }) {
     <div className="overflow-auto">
       <section className="absolute z-20 flex flex-col w-full h-full p-10 overflow-x-hidden overflow-y-auto -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 bg-black/40 backdrop-blur-md">
         <div className="m-auto flex w-full max-w-[936px] flex-col items-center">
-          <h1 className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+          <motion.h1
+            variants={headingFromLeft}
+            animate={isRules ? "visible" : "hidden"}
+            className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent"
+          >
             Как играть?
-          </h1>
+          </motion.h1>
 
           <div
             ref={sliderRef}
@@ -90,16 +97,7 @@ export default function Rules({ setIsRules, setIsGameStarted, isGameStarted }) {
               </p>
             </div>
           </div>
-
-          <div className="inline-flex w-full max-w-[456px] rounded-full border-4 border-[#2b8c97] p-1 text-white shadow-[inset_0_0_0_2px_#dfbbd4] transition-colors duration-150 ease-in-out">
-            <button
-              onClick={onClickHandler}
-              type="button"
-              className="text-20 text-none leading-7.5 h-15 font-montserrat text-shadow-lg m-0 inline-flex w-full max-w-[440px] flex-row items-center justify-center overflow-hidden whitespace-nowrap rounded-full border-0 bg-[url('/img/game/btn-bg.png')] bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-cover bg-center bg-no-repeat px-6 py-2.5 text-center align-top font-bold text-white transition-colors duration-150 ease-in-out"
-            >
-              {buttonText}
-            </button>
-          </div>
+          <Button onClick={onClickHandler} text={buttonText} />
         </div>
       </section>
     </div>

@@ -13,10 +13,18 @@ import GamePanel from "./GamePanel";
 import GamePanelPopup from "./popups/GamePanelPopup";
 import Header from "./Header";
 import Image from "next/image";
+import { popUpFromBottom } from "../content/FramerMotionVariants";
+import Button from "./Button";
+import Timer from "./Timer";
 
 const gameplaySoundUrl = "/sound/gameplay.mp3";
 const rightSoundUrl = "/sound/right.mp3";
 
+const timerDurationSeconds = 60;
+const time = new Date();
+const expiryTimestamp = time.setSeconds(
+  time.getSeconds() + timerDurationSeconds,
+); // timer
 export default function Game({ isStartScreen }) {
   let gameItemsData = [
     {
@@ -90,21 +98,10 @@ export default function Game({ isStartScreen }) {
       },
     },
   ];
-
-  const [isAllItemsPopup, setIsAllItemsPopup] = useState(false);
-  const [isHalfItemsPopup, setIsHalfItemsPopup] = useState(false);
-  const [isZeroItemsPopup, setIsZeroItemsPopup] = useState(false);
-  const [isSendGiftPopup, setIsSendGiftPopup] = useState(false);
-
-
-  const [gameItems, setGameItems] = useState(gameItemsData);
-  const [panelItems, setPanelItems] = useState(gameItems);
-
-  const timerDurationSeconds = 20;
-  const time = new Date();
-  const expiryTimestamp = time.setSeconds(
-    time.getSeconds() + timerDurationSeconds,
-  ); // timer
+  
+  let gameContainer = useRef();
+  let gameArea = useRef();
+  let game = useRef();
 
   const [isDown, setIsDown] = useState(false);
   const [startCoords, setStartCoords] = useState({ x: 0, y: 0 });
@@ -112,6 +109,25 @@ export default function Game({ isStartScreen }) {
     left: 0,
     top: 0,
   });
+
+  const [isAllItemsPopup, setIsAllItemsPopup] = useState(false);
+  const [isHalfItemsPopup, setIsHalfItemsPopup] = useState(false);
+  const [isZeroItemsPopup, setIsZeroItemsPopup] = useState(false);
+  const [isSendGiftPopup, setIsSendGiftPopup] = useState(false);
+  const [isItemPopupShow, setIsItemPopupShow] = useState(false);
+  const [isPanelPopup, setIsPanelPopup] = useState(false);
+  const [isErrorPopup, setIsErrorPopup] = useState(false);
+  const [isRules, setIsRules] = useState(true);
+
+  const [gameItems, setGameItems] = useState(gameItemsData);
+  const [panelItems, setPanelItems] = useState(gameItems);
+  const [foundedItem, setFoundedItem] = useState(null);
+  const [foundedItems, setFoundedItems] = useState([]);
+
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isTimerEnd, setIsTimerEnd] = useState(false);
+  const [isSoundPlay, setIsSoundPlay] = useState(false);
+
   const {
     totalSeconds,
     seconds,
@@ -129,53 +145,6 @@ export default function Game({ isStartScreen }) {
     onExpire: () => onTimerEnd(),
   });
 
-  // Для рестарта таймера нужна новая метка времени, отличная от начальной
-  function restartTimerWithNewExpiryTimestamp() {
-    const time = new Date();
-    const expiryTimestamp = time.setSeconds(
-      time.getSeconds() + timerDurationSeconds,
-    );
-    restartTimer(expiryTimestamp);
-  }
-
-  const [isRules, setIsRules] = useState(true);
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [isTimerEnd, setIsTimerEnd] = useState(false);
-
-  let gameContainer = useRef();
-  let gameArea = useRef();
-  let game = useRef();
-
-  function mouseDownHandler(e) {
-    let startX = e.pageX - gameContainer.current.offsetLeft;
-    let startY = e.pageY - gameContainer.current.offsetTop;
-    let scrollLeft = gameContainer.current.scrollLeft;
-    let scrollTop = gameContainer.current.scrollTop;
-
-    setIsDown(true);
-    setStartCoords({ x: startX, y: startY });
-    setContainerScrollPos({ left: scrollLeft, top: scrollTop });
-  }
-
-  function mouseMoveHandler(e) {
-    if (!isDown) return;
-    e.preventDefault();
-
-    const x = e.pageX - gameContainer.current.offsetLeft,
-      y = e.pageY - gameContainer.current.offsetTop;
-    const walkX = (x - startCoords.x) * 1,
-      walkY = (y - startCoords.y) * 1;
-    gameContainer.current.scrollLeft = containerScrollPos.left - walkX;
-    gameContainer.current.scrollTop = containerScrollPos.top - walkY;
-  }
-
-  const [isItemPopupShow, setIsItemPopupShow] = useState(false);
-  const [foundedItem, setFoundedItem] = useState(null);
-  const [foundedItems, setFoundedItems] = useState([]);
-  const [isPanelPopup, setIsPanelPopup] = useState(false);
-  const [isErrorPopup, setIsErrorPopup] = useState(false);
-
-  const [isSoundPlay, setIsSoundPlay] = useState(false);
   const [play, { stop, pause }] = useSound(gameplaySoundUrl, {
     volume: 0.5,
     loop: true,
@@ -188,23 +157,19 @@ export default function Game({ isStartScreen }) {
     },
   );
 
-  function pauseSound() {
-    pause();
-    setIsSoundPlay(false);
-  }
-
-  function playSound() {
-    play();
-    setIsSoundPlay(true);
-  }
-
-  function stopSound() {
-    stop();
-    setIsSoundPlay(false);
-  }
-
   useEffect(() => {
     initGameContainerStartPosition();
+  }, []);
+
+  useEffect(() => {
+    function handleEscapeKey(event) {
+      if (event.code === "Escape") {
+        setIsPanelPopup(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => document.removeEventListener("keydown", handleEscapeKey);
   }, []);
 
   // useEffect(() => {
@@ -255,17 +220,52 @@ export default function Game({ isStartScreen }) {
     }
   }, [isPanelPopup]);
 
-  useEffect(() => {
-    function handleEscapeKey(event) {
-      if (event.code === "Escape") {
-        setIsPanelPopup(false);
-      }
-    }
+  // Для рестарта таймера нужна новая метка времени, отличная от начальной
+  function restartTimerWithNewExpiryTimestamp() {
+    const time = new Date();
+    const expiryTimestamp = time.setSeconds(
+      time.getSeconds() + timerDurationSeconds,
+    );
+    restartTimer(expiryTimestamp);
+  }
 
-    document.addEventListener("keydown", handleEscapeKey);
-    return () => document.removeEventListener("keydown", handleEscapeKey);
-  }, []);
+  function mouseDownHandler(e) {
+    let startX = e.pageX - gameContainer.current.offsetLeft;
+    let startY = e.pageY - gameContainer.current.offsetTop;
+    let scrollLeft = gameContainer.current.scrollLeft;
+    let scrollTop = gameContainer.current.scrollTop;
 
+    setIsDown(true);
+    setStartCoords({ x: startX, y: startY });
+    setContainerScrollPos({ left: scrollLeft, top: scrollTop });
+  }
+
+  function mouseMoveHandler(e) {
+    if (!isDown) return;
+    e.preventDefault();
+
+    const x = e.pageX - gameContainer.current.offsetLeft,
+      y = e.pageY - gameContainer.current.offsetTop;
+    const walkX = (x - startCoords.x) * 1,
+      walkY = (y - startCoords.y) * 1;
+    gameContainer.current.scrollLeft = containerScrollPos.left - walkX;
+    gameContainer.current.scrollTop = containerScrollPos.top - walkY;
+  }
+
+  function pauseSound() {
+    pause();
+    setIsSoundPlay(false);
+  }
+
+  function playSound() {
+    play();
+    setIsSoundPlay(true);
+  }
+
+  function stopSound() {
+    stop();
+    setIsSoundPlay(false);
+  }
 
   function onTimerEnd() {
     setIsGameStarted(false);
@@ -347,9 +347,16 @@ export default function Game({ isStartScreen }) {
   }
 
   return (
-    <div className={`${!isStartScreen ? "opacity-100" : "opacity-0"} m-auto`}>
+    <div
+      className={`${!isStartScreen ? "opacity-100" : "opacity-0"} m-auto select-none`}
+    >
       {isRules && (
-        <Rules setIsRules={setIsRules} setIsGameStarted={setIsGameStarted} isGameStarted={isGameStarted} />
+        <Rules
+          isRules={isRules}
+          setIsRules={setIsRules}
+          setIsGameStarted={setIsGameStarted}
+          isGameStarted={isGameStarted}
+        />
       )}
 
       <ItemPopup
@@ -364,25 +371,16 @@ export default function Game({ isStartScreen }) {
         setIsRules={setIsRules}
       />
 
-      <div
-        className="absolute z-10 -translate-x-1/2 left-1/2 w-max text-gray-50"
-        style={{ textAlign: "center" }}
-      >
-        <div className="inline-block" style={{ fontSize: "100px" }}>
-          <span>{minutes}</span>:
-          <span>{seconds.toString().padStart(2, "0")}</span>
-        </div>
-        <p>{totalSeconds}</p>
-
-        <div className="inline-flex flex-wrap justify-center w-auto gap-2">
-          <p>{isRunning ? "Запущен" : "Остановлен"}</p>
-          <button onClick={startTimer}>Старт</button>
-          <button onClick={pauseTimer}>Пауза</button>
-          <button onClick={resumeTimer}>Продолжить</button>
-          <button onClick={pauseSound}>Выключить музыку</button>
-          <button onClick={() => restartTimerWithNewExpiryTimestamp()}>Рестарт</button>
-        </div>
-      </div>
+      <Timer
+        startTimer={startTimer}
+        pauseTimer={pauseTimer}
+        resumeTimer={resumeTimer}
+        pauseSound={pauseSound}
+        restartTimer={() => restartTimerWithNewExpiryTimestamp()}
+        isRunning={isRunning}
+        minutes={minutes}
+        seconds={seconds}
+      />
 
       <section
         ref={game}
@@ -424,72 +422,76 @@ export default function Game({ isStartScreen }) {
           </div>
         </div>
 
-        
-
         <PopupWrapper
           id="panel-items-popup"
           isOpen={isPanelPopup}
           setIsOpen={setIsPanelPopup}
           closed
+          variants={popUpFromBottom}
         >
-          <GamePanelPopup setIsOpen={setIsPanelPopup} items={gameItems} />
+          <GamePanelPopup
+            setIsOpen={setIsPanelPopup}
+            isOpen={isPanelPopup}
+            items={gameItems}
+          />
         </PopupWrapper>
 
         <PopupWrapper id="send-gift-popup" isOpen={isSendGiftPopup}>
-          <div className="z-1010 mx-auto max-w-[456px] rounded-[24px] flex items-center flex-col">
-            <p className="mb-6 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">Отправили подарок на почту!</p>
-            <p className="mb-6">Может, сыграем ещё или расскажем о вашем успехе?</p>
-            <div className="mx-auto inline-flex w-full max-w-[456px] rounded-full border-4 border-[#2b8c97] p-1 text-white shadow-[inset_0_0_0_2px_#dfbbd4] transition-colors duration-150 ease-in-out">
-              <button
-                onClick={restartGame}
-                type="submit"
-                className={`text-20 text-none leading-7.5 h-15 font-montserrat text-shadow-lg m-0 inline-flex w-full max-w-[440px] flex-row items-center justify-center overflow-hidden whitespace-nowrap rounded-full border-0 bg-[url('/img/game/btn-bg.png')] bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-cover bg-center bg-no-repeat px-6 py-2.5 text-center align-top font-bold text-white transition-colors duration-150 ease-in-out`}
-              >
-                Играть заново
-              </button>
-            </div>
+          <div className="z-1010 mx-auto flex max-w-[456px] flex-col items-center rounded-[24px]">
+            <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+              Отправили подарок на&nbsp;почту!
+            </p>
+            <p className="mb-6 text-center">
+              Может, сыграем ещё или расскажем о&nbsp;вашем успехе?
+            </p>
+            <Button onClick={restartGame} text="Играть заново" />
           </div>
         </PopupWrapper>
 
         <PopupWrapper id="error-popup" isOpen={isErrorPopup}>
-          <div className="z-1010 mx-auto max-w-[456px] rounded-[24px] flex items-center flex-col">
-            <Image src="/img/error-icon.svg" alt="" width="64" height="64"></Image>
+          <div className="z-1010 mx-auto flex max-w-[456px] flex-col items-center rounded-[24px]">
+            <Image
+              src="/img/error-icon.svg"
+              alt=""
+              width="64"
+              height="64"
+            ></Image>
             <p>Упс... Что-то пошло не так...</p>
             <p>Попробуйте еще раз.</p>
           </div>
         </PopupWrapper>
 
         <PopupWrapper id="all-items" isOpen={isAllItemsPopup}>
-          <p className="mb-6 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">
+          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
             Поздравляю! <br /> Вы нашли все предметы!
           </p>
           {/* <Image src="" alt="" /> */}
-          <ContactForm setIsSendGiftPopup={setIsSendGiftPopup} onClosePopups={onClosePopups} />
+          <ContactForm
+            setIsSendGiftPopup={setIsSendGiftPopup}
+            onClosePopups={onClosePopups}
+          />
         </PopupWrapper>
 
         <PopupWrapper id="half-items" isOpen={isHalfItemsPopup}>
-          <p className="mb-6 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">
+          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
             Вы нашли {foundedItems.length} из {gameItems.length} предметов!
           </p>
           {/* <Image src="" alt="" /> */}
-          <ContactForm setIsSendGiftPopup={setIsSendGiftPopup} onClosePopups={onClosePopups} />
+          <ContactForm
+            setIsSendGiftPopup={setIsSendGiftPopup}
+            onClosePopups={onClosePopups}
+          />
         </PopupWrapper>
 
         <PopupWrapper id="zero-items" isOpen={isZeroItemsPopup}>
           {/* <Image src="" alt="" /> */}
-          <p className="mb-4 text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-[#ff9afc] to-[#ee40a8]">
-          Отошли попеть с&nbsp;фанатами Russian Girls?
+          <p className="mb-4 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+            Отошли попеть с&nbsp;фанатами Russian Girls?
           </p>
-          <p className="mx-auto mb-6 text-center">Ничего страшного, попробуйте снова!</p>
-          <div className="inline-flex w-full max-w-[456px] rounded-full border-4 border-[#2b8c97] p-1 text-white shadow-[inset_0_0_0_2px_#dfbbd4] transition-colors duration-150 ease-in-out">
-            <button
-              onClick={restartGame}
-              type="button"
-              className="text-20 text-none leading-7.5 h-15 font-montserrat text-shadow-lg m-0 inline-flex w-full max-w-[440px] flex-row items-center justify-center overflow-hidden whitespace-nowrap rounded-full border-0 bg-[url('/img/game/btn-bg.png')] bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-cover bg-center bg-no-repeat px-6 py-2.5 text-center align-top font-bold text-white transition-colors duration-150 ease-in-out"
-            >
-              Попробовать снова
-            </button>
-          </div>
+          <p className="mx-auto mb-6 text-center">
+            Ничего страшного, попробуйте снова!
+          </p>
+          <Button onClick={restartGame} text="Попробовать снова" />
         </PopupWrapper>
       </section>
     </div>

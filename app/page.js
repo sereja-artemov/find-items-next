@@ -38,17 +38,16 @@ export default function Home() {
     cacheImages(preloadImagesData);
   }, []);
   
-
   return (
     <main className='flex w-screen h-screen'>
-    <div className='max-w-[1920px] max-h-[1080px] m-auto h-screen h-[100svh] w-full flex-1 relative overflow-hidden'>
-      <div className='relative h-full'>
-        {(isImagePreloading || mainImageLoading) && <Loading />}
-        {/* {isStartScreen ? <FirstScreen setIsStartScreen={setIsStartScreen} /> : <Game /> } */}
-        {isStartScreen && <FirstScreen setIsStartScreen={setIsStartScreen} setMainImageLoading={setMainImageLoading} />}
-        <Game isStartScreen={isStartScreen} />
-        </div>
-    </div>
+      <div className='max-w-[1920px] max-h-[1080px] m-auto h-screen h-[100svh] w-full flex-1 relative overflow-hidden'>
+        <div className='relative h-full'>
+          {(isImagePreloading || mainImageLoading) && <Loading />}
+          {/* {isStartScreen ? <FirstScreen setIsStartScreen={setIsStartScreen} /> : <Game /> } */}
+          {isStartScreen && <FirstScreen setIsStartScreen={setIsStartScreen} setMainImageLoading={setMainImageLoading} />}
+          <Game isStartScreen={isStartScreen} />
+          </div>
+      </div>
     </main>
   );
 }
