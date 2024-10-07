@@ -66,7 +66,7 @@ export default function Rules({ isRules, setIsRules, setIsGameStarted, isGameSta
           <motion.h1
             variants={headingFromLeft}
             animate={isRules ? "visible" : "hidden"}
-            className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent"
+            className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl max-sm:text-3xl font-black text-transparent"
           >
             Как играть?
           </motion.h1>

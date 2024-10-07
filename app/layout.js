@@ -7,6 +7,15 @@ const montserrat = Montserrat({
   variable: '--font-montserrat',
 })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Also supported by less commonly used
+  // interactiveWidget: 'resizes-visual',
+}
+
 export const metadata = {
   metadataBase: new URL('https://localhost:3000'),
   title: "Игра «Комбинация»: окунитесь в музыку 90-х. Играть",
@@ -33,9 +42,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru">
+    <html lang="ru" className="h-full min-h-full min-w-[320px]">
       <body
-        className={`${montserrat.variable}`}
+        className={`${montserrat.variable} h-full min-h-full min-w-[320px]`}
       >
         {children}
       </body>

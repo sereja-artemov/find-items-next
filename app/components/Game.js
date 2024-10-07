@@ -18,8 +18,8 @@ import Button from "./Button";
 // import Timer from "./Timer";
 const Timer = dynamic(() => import('./Timer'), { ssr: false });
 
-const gameplaySoundUrl = "/sound/gameplay.mp3";
-const rightSoundUrl = "/sound/right.mp3";
+const gameplaySoundUrl = "sound/gameplay.mp3";
+const rightSoundUrl = "sound/right.mp3";
 
 const timerDurationSeconds = 60;
 const time = new Date();
@@ -441,7 +441,7 @@ export default function Game({ isStartScreen }) {
 
         <PopupWrapper id="send-gift-popup" isOpen={isSendGiftPopup}>
           <div className="z-1010 mx-auto flex max-w-[456px] flex-col items-center rounded-[24px]">
-            <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+            <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent max-sm:mb-3 max-sm:text-2xl">
               Отправили подарок на&nbsp;почту!
             </p>
             <p className="mb-6 text-center">
@@ -465,7 +465,7 @@ export default function Game({ isStartScreen }) {
         </PopupWrapper>
 
         <PopupWrapper id="all-items" isOpen={isAllItemsPopup}>
-          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent max-sm:mb-3 max-sm:text-2xl">
             Поздравляю! <br /> Вы нашли все предметы!
           </p>
           {/* <Image src="" alt="" /> */}
@@ -476,7 +476,7 @@ export default function Game({ isStartScreen }) {
         </PopupWrapper>
 
         <PopupWrapper id="half-items" isOpen={isHalfItemsPopup}>
-          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+          <p className="mb-6 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent max-sm:mb-3 max-sm:text-2xl">
             Вы нашли {foundedItems.length} из {gameItems.length} предметов!
           </p>
           {/* <Image src="" alt="" /> */}

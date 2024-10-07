@@ -22,9 +22,9 @@ export default function GamePanelPopup({ items, setIsOpen, isOpen }) {
   return (
     <div
       ref={scope}
-      className="flex w-full max-w-[776px] flex-col items-center"
+      className="flex w-full max-w-[776px] flex-col items-center pt-10"
     >
-      <p className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent">
+      <p className="mb-8 bg-gradient-to-r from-[#ff9afc] to-[#ee40a8] bg-clip-text text-center text-4xl font-black text-transparent max-sm:text-3xl">
         Что мы&nbsp;ищем?
       </p>
       <div className="wrap-anim mx-auto mb-8 grid w-full max-w-[580px] grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-6">

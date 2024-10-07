@@ -23,7 +23,7 @@ export default function FirstScreen({ setIsStartScreen, setMainImageLoading }) {
               <Image
                 width="68"
                 height="64"
-                src="/img/logo.png"
+                src="img/logo.png"
                 alt="логотип"
                 className="mx-auto my-10 logo"
               />

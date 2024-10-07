@@ -20,12 +20,12 @@ export default function PopupWrapper({
     <div
       onClick={onClickHandler}
       id={`popup-${id}`}
-      className={`popup fixed left-1/2 top-1/2 z-50 h-full w-full -translate-x-1/2 -translate-y-1/2 overflow-auto bg-black/50 backdrop-blur-md ${isOpen ? "flex" : "hidden"}`}
+      className={`popup fixed p-5 left-1/2 top-1/2 z-50 h-full w-full -translate-x-1/2 -translate-y-1/2 overflow-auto bg-black/50 backdrop-blur-md ${isOpen ? "flex" : "hidden"}`}
     >
       <motion.div
         variants={variants}
         animate={isOpen ? "visible" : "hidden"}
-        className="relative z-50 m-auto flex w-screen max-w-[616px] flex-col items-center rounded-2xl border-4 border-[#2b8c97] bg-black bg-opacity-90 p-10 shadow-[inset_0_0_0_2px_#dfbbd4]"
+        className="relative z-50 m-auto w-full flex max-w-[616px] flex-col items-center rounded-2xl border-4 border-[#2b8c97] bg-black bg-opacity-90 p-10 max-sm:p-5 shadow-[inset_0_0_0_2px_#dfbbd4]"
       >
         {children}
         {closed && (
