@@ -17,7 +17,7 @@ export default function Home() {
   let preloadImagesData = [
     // 'img/game/main-img-x2.png',
     // 'img/game/start-bg.jpg',
-    // '/img/game/lights.png'
+    '/img/game/lights.png'
   ]
 
   useEffect(() => {

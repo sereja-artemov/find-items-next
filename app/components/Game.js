@@ -128,6 +128,7 @@ export default function Game({ isStartScreen }) {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isTimerEnd, setIsTimerEnd] = useState(false);
   const [isSoundPlay, setIsSoundPlay] = useState(false);
+  const [isSoundLoaded, setIsSoundLoaded] = useState(false);
 
   const {
     totalSeconds,
@@ -149,6 +150,9 @@ export default function Game({ isStartScreen }) {
   const [play, { stop, pause }] = useSound(gameplaySoundUrl, {
     volume: 0.5,
     loop: true,
+    onload: () => {
+      setIsSoundLoaded(true);
+    },
   });
   const [playRight, { stop: stopRight, pause: pauseRight }] = useSound(
     rightSoundUrl,
@@ -160,6 +164,8 @@ export default function Game({ isStartScreen }) {
 
   useEffect(() => {
     initGameContainerStartPosition();
+
+    
   }, []);
 
   useEffect(() => {
@@ -210,10 +216,16 @@ export default function Game({ isStartScreen }) {
   useEffect(() => {
     isGameStarted ? startTimer() : pauseTimer();
 
-    if (isGameStarted && !isSoundPlay) {
+    if (isGameStarted && !isSoundPlay && isSoundLoaded) {
       playSound();
     }
   }, [isGameStarted]);
+
+  useEffect(() => {
+    if (isGameStarted && isSoundLoaded && !isSoundPlay) {
+      playSound();
+    }
+  }, [isSoundLoaded])
 
   useEffect(() => {
     if (isGameStarted) {
